@@ -15,8 +15,8 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerRB = GetComponent<Rigidbody>();                                               // get the rigidbody component
-        focalPoint = GameObject.Find("FocalPoint");                                         // find the game object with the name "FocalPoint"
+        playerRB = GetComponent<Rigidbody>();                                                     // get the rigidbody component
+        focalPoint = GameObject.Find("CameraFocalPoint");                                         // find the game object with the name "FocalPoint"
     }
 
     // Update is called once per frame
