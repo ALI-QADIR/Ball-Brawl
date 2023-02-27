@@ -8,6 +8,9 @@ namespace Assets.Scripts
         [Tooltip("Enemy Prefab")]
         public GameObject enemyPrefab;
 
+        [Tooltip("Power Up Prefab")]
+        public GameObject powerUpPrefab;
+
         [HideInInspector] public int waveNumber = 1;
 
         // private variables
@@ -16,6 +19,7 @@ namespace Assets.Scripts
         // Start is called before the first frame update
         private void Start()
         {
+            Instantiate(powerUpPrefab, GenerateSpawnPos(), powerUpPrefab.transform.rotation);
             SpawnEnemyWave(waveNumber);
         }
 
@@ -32,7 +36,7 @@ namespace Assets.Scripts
 
         private static Vector3 GenerateSpawnPos()
         {
-            // This function generates a random spawn position for an enemy in the game world.
+            // This function generates a random spawn position for a game object to spawn in the game world.
             // The spawn position is a Vector3 with a random x and z value between -spawnRange and spawnRange
             // and a y value of 0.
             var spawnPosX = Random.Range(spawnRange, -spawnRange);
@@ -51,10 +55,12 @@ namespace Assets.Scripts
             // assigns Active Enemy number in the scene to the variable ActiveEnemies.
             // Then checks if the number of active enemies is 0 and if so,
             // spawns a new wave of enemies with one enemy more than the previous wave.
+            // also spawns a power up at a random position on the island.
             activeEnemies = FindObjectsOfType<Enemy>().Length;
             if (activeEnemies != 0) return;
             waveNumber++;
             SpawnEnemyWave(waveNumber);
+            Instantiate(powerUpPrefab, GenerateSpawnPos(), powerUpPrefab.transform.rotation);
         }
     }
 }
