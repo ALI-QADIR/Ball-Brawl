@@ -1,16 +1,14 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     // public variables
     [Tooltip("Speed at which Player Moves")]
-    public float Speed = 1.0f;
+    public float speed = 1.0f;
 
     [Tooltip("Power up indicator prefab")]
-    public GameObject PowerUpIndicator;
+    public GameObject powerUpIndicator;
 
     [Tooltip("Height at which PowerUp indicator appears")]
     public float yValue;
@@ -36,13 +34,13 @@ public class PlayerController : MonoBehaviour
     {
         // Get the vertical input and move the player forward with respect to the camera's focal point
         var forwardInput = Input.GetAxis("Vertical");
-        _playerRb.AddForce(forwardInput * Speed * _focalPoint.transform.forward);
+        _playerRb.AddForce(forwardInput * speed * _focalPoint.transform.forward);
 
         // If the player has a power-up, set the power-up indicator's position to the player's position.\
         // This ensures that the power-up indicator follows the player around.
         if (_hasPowerUp)
         {
-            PowerUpIndicator.transform.position = transform.position + new Vector3(0, yValue, 0);
+            powerUpIndicator.transform.position = transform.position + new Vector3(0, yValue, 0);
         }
     }
 
@@ -58,7 +56,7 @@ public class PlayerController : MonoBehaviour
         _hasPowerUp = true;
         Destroy(other.gameObject);
         StartCoroutine(PowerUpCountdownRoutine());
-        PowerUpIndicator.gameObject.SetActive(true);
+        powerUpIndicator.gameObject.SetActive(true);
     }
 
     // This method is called when the player collides with a non-trigger collider (`collision`).
@@ -93,6 +91,6 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(7);
         _hasPowerUp = false;
 
-        PowerUpIndicator.gameObject.SetActive(false);
+        powerUpIndicator.gameObject.SetActive(false);
     }
 }

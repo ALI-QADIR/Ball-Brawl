@@ -560,7 +560,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1598979415
 Transform:
   m_ObjectHideFlags: 0
@@ -589,6 +589,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 716618403614436622, guid: acd3b2b7161992a4fa95c2e298295008, type: 3}
+  waveNumber: 1
+  activeEnemies: 0
 --- !u!1 &2073380979
 GameObject:
   m_ObjectHideFlags: 0
@@ -618,7 +620,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5b4b3f61897e034187936d63783f990, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 1
+  speed: 45
 --- !u!4 &2073380981
 Transform:
   m_ObjectHideFlags: 0
@@ -753,6 +755,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7258492118276931159, guid: 43c959c59b692134580b3abe70c21d3e, type: 3}
       propertyPath: PowerUpIndicator
+      value: 
+      objectReference: {fileID: 1569441939}
+    - target: {fileID: 7258492118276931159, guid: 43c959c59b692134580b3abe70c21d3e, type: 3}
+      propertyPath: powerUpIndicator
       value: 
       objectReference: {fileID: 1569441939}
     m_RemovedComponents: []

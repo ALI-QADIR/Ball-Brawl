@@ -6,10 +6,11 @@ namespace Assets.Scripts
     {
         // public variables
         [Tooltip("Speed at which Enemy Moves")]
-        public float Speed = 1.0f;
+        public float speed = 1.0f;
 
         // private variables
         private Rigidbody _enemyRb;
+
         private GameObject _player;
 
         // Start is called before the first frame update
@@ -28,10 +29,15 @@ namespace Assets.Scripts
             // We then multiply this vector by the `speed` variable (defined in the editor) to determine the force to apply.
             // Finally, we apply the force to the enemy's rigid body (`enemyRB`).
             var lookDirection = (_player.transform.position - transform.position).normalized;
-            var forceMagnitude = Speed * Time.deltaTime;
+            var forceMagnitude = speed * Time.deltaTime;
             var force = lookDirection * forceMagnitude;
             _enemyRb.AddForce(force, ForceMode.Impulse);
 
+            // If the enemy falls below the bottom of the screen, destroy it.
+            if (transform.position.y < -10)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }
