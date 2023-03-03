@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Assets.Scripts;
 using UnityEngine;
@@ -14,6 +15,11 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Projectile Prefab")]
     [SerializeField] public GameObject projectilePrefab;
 
+    public float hangTime;
+    public float smashSpeed;
+    public float explosionForce;
+    public float explosionRadius;
+
     public PowerUpType currentPowerUpType = PowerUpType.None;
 
     // private variables
@@ -25,6 +31,9 @@ public class PlayerController : MonoBehaviour
     private const float yValue = -0.6f;
     private GameObject _tmpRocket;
     private Coroutine _powerUpCoroutine;
+
+    private bool _smashing;
+    private float _floorY;
 
     // Start is called before the first frame update
     private void Start()
@@ -49,10 +58,14 @@ public class PlayerController : MonoBehaviour
             powerUpIndicator.transform.position = transform.position + new Vector3(0, yValue, 0);
         }
 
-        if (currentPowerUpType != PowerUpType.Rocket) return;
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (currentPowerUpType == PowerUpType.Rocket && Input.GetKeyDown(KeyCode.Space))
         {
             LaunchRockets();
+        }
+        if (currentPowerUpType == PowerUpType.Smash && !_smashing && Input.GetKeyDown(KeyCode.Space))
+        {
+            _smashing = true;
+            StartCoroutine(Smash());
         }
     }
 
@@ -121,5 +134,32 @@ public class PlayerController : MonoBehaviour
         _hasPowerUp = false;
         currentPowerUpType = PowerUpType.None;
         powerUpIndicator.gameObject.SetActive(false);
+    }
+
+    private IEnumerator Smash()
+    {
+        _floorY = transform.position.y;
+
+        var jumpTime = Time.time + hangTime;
+
+        while (Time.time < jumpTime)
+        {
+            _playerRb.velocity = Vector3.up * smashSpeed;
+            yield return null;
+        }
+
+        while (transform.position.y > _floorY)
+        {
+            _playerRb.velocity = 2 * smashSpeed * Vector3.down;
+            yield return null;
+        }
+
+        foreach (var enemy in FindObjectsOfType<Enemy>())
+        {
+            enemy.GetComponent<Rigidbody>().AddExplosionForce(explosionForce, transform.position, explosionRadius, 0.0f,
+                ForceMode.Impulse);
+        }
+
+        _smashing = false;
     }
 }
