@@ -1,4 +1,5 @@
 using System.Collections;
+using Assets.Scripts;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -10,15 +11,20 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Power up indicator prefab")]
     public GameObject powerUpIndicator;
 
-    [Tooltip("Height at which PowerUp indicator appears")]
-    public float yValue;
+    [Tooltip("Projectile Prefab")]
+    [SerializeField] public GameObject projectilePrefab;
+
+    public PowerUpType currentPowerUpType = PowerUpType.None;
 
     // private variables
     private Rigidbody _playerRb;
 
     private GameObject _focalPoint;
     private bool _hasPowerUp;
-    private readonly float _powerUpStrength = 15.0f;
+    private const float powerUpStrength = 15.0f;
+    private const float yValue = -0.6f;
+    private GameObject _tmpRocket;
+    private Coroutine _powerUpCoroutine;
 
     // Start is called before the first frame update
     private void Start()
@@ -42,6 +48,12 @@ public class PlayerController : MonoBehaviour
         {
             powerUpIndicator.transform.position = transform.position + new Vector3(0, yValue, 0);
         }
+
+        if (currentPowerUpType != PowerUpType.Rocket) return;
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            LaunchRockets();
+        }
     }
 
     // This method is called when the player collides with a trigger collider (`other`).
@@ -52,11 +64,17 @@ public class PlayerController : MonoBehaviour
     // The power-up indicator is also activated.
     private void OnTriggerEnter(Component other)
     {
+        Destroy(other.gameObject);
         if (!other.CompareTag("PowerUp")) return;
         _hasPowerUp = true;
-        Destroy(other.gameObject);
-        StartCoroutine(PowerUpCountdownRoutine());
+        currentPowerUpType = other.gameObject.GetComponent<PowerUp>().powerUpType;
         powerUpIndicator.gameObject.SetActive(true);
+
+        if (_powerUpCoroutine != null)
+        {
+            StopCoroutine(_powerUpCoroutine);
+        }
+        _powerUpCoroutine = StartCoroutine(PowerUpCountdownRoutine(7));
     }
 
     // This method is called when the player collides with a non-trigger collider (`collision`).
@@ -75,22 +93,33 @@ public class PlayerController : MonoBehaviour
         //
         // Finally, we apply the force to the enemy's rigid-body (`enemyRB`) as an Impulse.
 
-        if (!collision.gameObject.CompareTag("Enemy") || !_hasPowerUp) return;
-        var enemyRb = collision.gameObject.GetComponent<Rigidbody>();
-        var awayFromPlayer = (collision.gameObject.transform.position - transform.position).normalized;
+        if (collision.gameObject.CompareTag("Enemy") && currentPowerUpType == PowerUpType.PushBack)
+        {
+            var enemyRb = collision.gameObject.GetComponent<Rigidbody>();
+            var awayFromPlayer = (collision.gameObject.transform.position - transform.position).normalized;
 
-        var force = awayFromPlayer * _powerUpStrength;
-        enemyRb.AddForce(force, ForceMode.Impulse);
+            var force = awayFromPlayer * powerUpStrength;
+            enemyRb.AddForce(force, ForceMode.Impulse);
+        }
+    }
+
+    private void LaunchRockets()
+    {
+        foreach (var enemy in FindObjectsOfType<Enemy>())
+        {
+            _tmpRocket = Instantiate(projectilePrefab, transform.position + Vector3.up, Quaternion.identity);
+            _tmpRocket.GetComponent<RocketBehaviour>().Fire(enemy.transform);
+        }
     }
 
     // This co-routine waits for 7 seconds and then disables the power up.
     // It is called when the player picks up a power up
     // and is used to disable the power up after 7 seconds.
-    private IEnumerator PowerUpCountdownRoutine()
+    private IEnumerator PowerUpCountdownRoutine(int time)
     {
-        yield return new WaitForSeconds(7);
+        yield return new WaitForSeconds(time);
         _hasPowerUp = false;
-
+        currentPowerUpType = PowerUpType.None;
         powerUpIndicator.gameObject.SetActive(false);
     }
 }

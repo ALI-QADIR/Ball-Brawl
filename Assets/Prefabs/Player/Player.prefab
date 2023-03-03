@@ -127,6 +127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d6fade9aecab8b4db0180411bc7c8ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+  speed: 3
   powerUpIndicator: {fileID: 0}
-  yValue: -0.6
+  projectilePrefab: {fileID: 8426099336521068753, guid: 82430141648f4904da5c77c30915cb7e, type: 3}
+  currentPowerUpType: 0

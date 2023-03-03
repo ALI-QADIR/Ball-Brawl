@@ -9,7 +9,7 @@ namespace Assets.Scripts
         [SerializeField] public GameObject[] enemyPrefabsArray;
 
         [Tooltip("Power Up Prefab Array")]
-        [SerializeField] public GameObject powerUpPrefab;
+        [SerializeField] public GameObject[] powerUpPrefabs;
 
         // [Tooltip("Power Up Prefab Array")]
         // [SerializeField] public GameObject[] powerUpPrefabsArray;
@@ -22,7 +22,8 @@ namespace Assets.Scripts
         // Start is called before the first frame update
         private void Start()
         {
-            Instantiate(powerUpPrefab, GenerateSpawnPos(), powerUpPrefab.transform.rotation);
+            var randomPowerUpIndex = Random.Range(0, powerUpPrefabs.Length);
+            Instantiate(powerUpPrefabs[randomPowerUpIndex], GenerateSpawnPos(), powerUpPrefabs[randomPowerUpIndex].transform.rotation);
             SpawnEnemyWave(waveNumber);
         }
 
@@ -66,7 +67,8 @@ namespace Assets.Scripts
             if (activeEnemies != 0) return;
             waveNumber++;
             SpawnEnemyWave(waveNumber);
-            Instantiate(powerUpPrefab, GenerateSpawnPos(), powerUpPrefab.transform.rotation);
+            var randomPowerUpIndex = Random.Range(0, powerUpPrefabs.Length);
+            Instantiate(powerUpPrefabs[randomPowerUpIndex], GenerateSpawnPos(), powerUpPrefabs[randomPowerUpIndex].transform.rotation);
         }
     }
 }
