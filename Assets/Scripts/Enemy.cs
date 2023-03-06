@@ -8,16 +8,28 @@ namespace Assets.Scripts
         [Tooltip("Speed at which Enemy Moves")]
         public float speed = 1.0f;
 
+        public bool isBoss = false;
+
+        public float spawnInterval;
+        public float nextSpawn;
+
+        public int miniEnemyCount;
+
         // private variables
         private Rigidbody _enemyRb;
 
         private GameObject _player;
+
+        private SpawnManager spawnManager;
 
         // Start is called before the first frame update
         private void Start()
         {
             _enemyRb = GetComponent<Rigidbody>();
             _player = GameObject.Find("Player");
+
+            if (!isBoss) return;
+            spawnManager = FindObjectOfType<SpawnManager>();
         }
 
         // Update is called once per frame
@@ -37,6 +49,13 @@ namespace Assets.Scripts
             if (transform.position.y < -10)
             {
                 Destroy(gameObject);
+            }
+
+            if (!isBoss) return;
+            if (Time.time > nextSpawn)
+            {
+                nextSpawn = Time.time + spawnInterval;
+                spawnManager.SpawnMiniEnemy(miniEnemyCount);
             }
         }
     }

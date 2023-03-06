@@ -8,11 +8,16 @@ namespace Assets.Scripts
         [Tooltip("Enemy Prefab Array")]
         [SerializeField] public GameObject[] enemyPrefabsArray;
 
+        [Tooltip("Boss Enemy Prefab")]
+        [SerializeField] public GameObject bossEnemyPrefab;
+
+        [Tooltip("Array of Mini Enemies that spawn with boss")]
+        [SerializeField] public GameObject[] miniEnemyPrefabs;
+
         [Tooltip("Power Up Prefab Array")]
         [SerializeField] public GameObject[] powerUpPrefabs;
 
-        // [Tooltip("Power Up Prefab Array")]
-        // [SerializeField] public GameObject[] powerUpPrefabsArray;
+        public int bossRound;
 
         [HideInInspector] public int waveNumber = 1;
 
@@ -66,9 +71,45 @@ namespace Assets.Scripts
             activeEnemies = FindObjectsOfType<Enemy>().Length;
             if (activeEnemies != 0) return;
             waveNumber++;
-            SpawnEnemyWave(waveNumber);
+            if (waveNumber % bossRound == 0)
+            {
+                SpawnBossWave(waveNumber);
+            }
+            else
+            {
+                SpawnEnemyWave(waveNumber);
+            }
+
             var randomPowerUpIndex = Random.Range(0, powerUpPrefabs.Length);
             Instantiate(powerUpPrefabs[randomPowerUpIndex], GenerateSpawnPos(), powerUpPrefabs[randomPowerUpIndex].transform.rotation);
+        }
+
+        private void SpawnBossWave(int currentRound)
+        {
+            int miniEnemiesToSpawn;
+
+            if (bossRound != 0)
+            {
+                miniEnemiesToSpawn = currentRound / bossRound;
+            }
+            else
+            {
+                miniEnemiesToSpawn = 1;
+            }
+
+            var boss = Instantiate(bossEnemyPrefab, GenerateSpawnPos(), bossEnemyPrefab.transform.rotation);
+
+            boss.GetComponent<Enemy>().miniEnemyCount = miniEnemiesToSpawn;
+        }
+
+        public void SpawnMiniEnemy(int miniEnemyCount)
+        {
+            for (var i = 0; i < miniEnemyCount; i++)
+            {
+                var randomMini = Random.Range(0, miniEnemyPrefabs.Length);
+                Instantiate(miniEnemyPrefabs[randomMini], GenerateSpawnPos(),
+                    miniEnemyPrefabs[randomMini].transform.rotation);
+            }
         }
     }
 }

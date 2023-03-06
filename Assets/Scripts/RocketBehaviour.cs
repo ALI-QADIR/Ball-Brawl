@@ -16,7 +16,7 @@ public class RocketBehaviour : MonoBehaviour
 
     public void Fire([NotNull] Transform target)
     {
-        _target = target ?? throw new ArgumentNullException(nameof(target));
+        _target = target != null ? target : throw new ArgumentNullException(nameof(target));
         _homing = true;
         Destroy(gameObject, aliveTimer);
     }
@@ -33,10 +33,10 @@ public class RocketBehaviour : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         if (_target == null) return;
+        Destroy(gameObject);
         if (!collision.gameObject.CompareTag(_target.tag)) return;
         var targetRb = collision.gameObject.GetComponent<Rigidbody>();
         var awayFromTarget = -collision.contacts[0].normal;
         targetRb.AddForce(awayFromTarget * rocketStrength, ForceMode.Impulse);
-        Destroy(gameObject);
     }
 }
