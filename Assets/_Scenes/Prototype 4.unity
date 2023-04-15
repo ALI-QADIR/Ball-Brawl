@@ -635,7 +635,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6153316925318051534, guid: 303ffa0afb3b57c48a52152b4073c1c1, type: 3}
       propertyPath: bossRound
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6153316925318051534, guid: 303ffa0afb3b57c48a52152b4073c1c1, type: 3}
       propertyPath: bossEnemyPrefab
@@ -697,6 +697,10 @@ PrefabInstance:
     - target: {fileID: 7258492118276931114, guid: 43c959c59b692134580b3abe70c21d3e, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 7258492118276931152, guid: 43c959c59b692134580b3abe70c21d3e, type: 3}
+      propertyPath: m_Mass
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7258492118276931158, guid: 43c959c59b692134580b3abe70c21d3e, type: 3}
       propertyPath: m_RootOrder
